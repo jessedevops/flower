@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#130e1c">
+  <meta name="description" content="A little flower and a lot of love. From Jesse.">
+  <title>A flower for you — From Jesse</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      overflow-x: hidden;
+      color: #fff0ec;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(
+        ellipse at 50% 45%,
+        #392035 0%,
+        #1b1427 42%,
+        #100d18 80%
+      );
+    }
+
+    button, summary, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button { font: inherit; }
+
+    button:focus-visible,
+    summary:focus-visible,
+    a:focus-visible {
+      outline: 2px solid #ffc7d9;
+      outline-offset: 6px;
+    }
+
+    .music {
+      position: absolute;
+      z-index: 5;
+      top: 22px;
+      left: 22px;
+      width: 264px;
+      padding: 12px;
+      border: 1px solid #ffffff21;
+      border-radius: 19px;
+      background: #251c30ed;
+      box-shadow: 0 12px 40px #0003;
+    }
+
+    .music summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .music summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .record {
+      display: grid;
+      place-items: center;
+      flex: 0 0 40px;
+      height: 40px;
+      border: 1px solid #e4a3b052;
+      border-radius: 50%;
+      background: repeating-radial-gradient(
+        #332334 0 2px,
+        #201823 3px 4px
+      );
+      color: #ffc3cf;
+      font-size: 20px;
+    }
+
+    .music strong {
+      display: block;
+      font-weight: 500;
+    }
+
+    .music small {
+      display: block;
+      margin-top: 4px;
+      color: #ccb4c6;
+      font-size: 11px;
+    }
+
+    .chevron {
+      margin-left: auto;
+      color: #e0afbf;
+    }
+
+    .music[open] .chevron {
+      transform: rotate(180deg);
+    }
+
+    .music iframe {
+      display: block;
+      width: 100%;
+      height: 200px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #100d18;
+    }
+
+    .music a {
+      display: block;
+      margin-top: 10px;
+      color: #f0bfd0;
+      font-size: 11px;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 700px);
+      margin: auto;
+      padding: 48px 20px 24px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 15px;
+      color: #d6a2b6;
+      font-size: 10px;
+      letter-spacing: .32em;
+    }
+
+    h1 {
+      margin: 0;
+      font: 400 clamp(34px, 5vw, 52px)/1.12 Georgia, serif;
+    }
+
+    h1 em {
+      color: #f4b5c9;
+      font-weight: 400;
+    }
+
+    .flower {
+      display: block;
+      position: relative;
+      width: min(100%, 490px);
+      margin: -4px auto -26px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      isolation: isolate;
+    }
+
+    .flower::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 5% 0 25%;
+      border-radius: 50%;
+      background: radial-gradient(#ed7fa43d, transparent 65%);
+      opacity: .45;
+      transition: opacity 2s;
+    }
+
+    .bloomed .flower::before {
+      opacity: 1;
+    }
+
+    .flower svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .plant {
+      transform-origin: 300px 580px;
+      animation: sway 6s ease-in-out infinite;
+    }
+
+    .petal {
+      transform-origin: 0 0;
+      transform: rotate(var(--fold)) scale(.24, .7);
+      transition: transform 2.1s cubic-bezier(.2, .7, .2, 1);
+      transition-delay: var(--delay);
+      stroke: #ffd6df4d;
+      stroke-width: 1;
+    }
+
+    .bloomed .petal {
+      transform: rotate(0deg) scale(var(--size));
+    }
+
+    .center {
+      transform: scale(.2);
+      opacity: 0;
+      transition: transform 1.4s 700ms, opacity 1.4s 700ms;
+    }
+
+    .bloomed .center {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .bud-seam {
+      opacity: .6;
+      transition: opacity .5s;
+    }
+
+    .bloomed .bud-seam {
+      opacity: 0;
+    }
+
+    .hint {
+      margin: 0;
+      color: #d4b5ca;
+      font-size: 12px;
+      letter-spacing: .035em;
+    }
+
+    .hint span {
+      display: block;
+      margin-bottom: 8px;
+      color: #f5b7c9;
+      font-size: 20px;
+    }
+
+    .note-slot {
+      min-height: 137px;
+      padding-top: 19px;
+    }
+
+    .letter {
+      width: min(100%, 330px);
+      margin: auto;
+      padding: 18px 24px;
+      border: 1px solid #f8b5cc38;
+      border-radius: 18px;
+      background: linear-gradient(130deg, #f8b5cc12, #f8b5cc04);
+      box-shadow: 0 14px 45px #0002;
+      animation: reveal 1.3s .9s both;
+    }
+
+    .letter h2 {
+      margin: 0;
+      font: italic 400 42px/1.2 Georgia, serif;
+      color: #ffd1de;
+    }
+
+    .letter p {
+      margin: 9px 0 0;
+      font-size: 12px;
+      letter-spacing: .1em;
+      color: #e9c2cf;
+    }
+
+    .again {
+      margin-top: 15px;
+      border: 0;
+      padding: 7px 10px;
+      color: #d4b5ca;
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    footer {
+      margin-top: 9px;
+      color: #ad8fa4;
+      font: italic 12px Georgia, serif;
+    }
+
+    .stars, .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .stars i {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #f8d9d3;
+      box-shadow: 0 0 8px #fac3cf;
+      animation: twinkle var(--time) var(--delay)
+        ease-in-out infinite alternate;
+    }
+
+    .hearts { z-index: 4; }
+
+    .heart {
+      position: absolute;
+      color: #ffb1ce;
+      font-size: 22px;
+      animation: float-away 2.8s ease-out both;
+      text-shadow: 0 0 14px #ff6aaf80;
+    }
+
+    [hidden] { display: none !important; }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+
+    @keyframes twinkle {
+      from { opacity: .15; }
+      to { opacity: .7; }
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float-away {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, 0) scale(.4);
+      }
+      15% { opacity: .85; }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy))
+          rotate(var(--spin));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .music {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 16px;
+        width: 250px;
+        max-width: calc(100% - 32px);
+      }
+
+      main { padding-top: 19px; }
+
+      .eyebrow {
+        font-size: 9px;
+        letter-spacing: .24em;
+      }
+
+      .flower { margin-top: 5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="hearts" aria-hidden="true"></div>
+
+  <!-- Music player -->
+  <details class="music">
+    <summary>
+      <span class="record" aria-hidden="true">♪</span>
+      <span>
+        <strong>Shape of My Heart</strong>
+        <small>Sting · open the music player</small>
+      </span>
+      <span class="chevron" aria-hidden="true">⌄</span>
+    </summary>
+
+    <a
+      href="https://www.youtube.com/watch?v=NlwIDxCjL-8"
+      target="_blank"
+      rel="noopener noreferrer">
+      Listen on YouTube ↗
+    </a>
+  </details>
+
+  <main>
+    <header>
+      <p class="eyebrow">FOR MY FAVORITE PERSON</p>
+      <h1>A little flower,<br><em>a lot of love.</em></h1>
+    </header>
+
+    <!-- Clickable flower -->
+    <button
+      class="flower"
+      id="flower"
+      type="button"
+      aria-label="Open your flower"
+      aria-expanded="false"
+      aria-controls="love-note">
+
+      <svg viewBox="0 0 600 620" aria-hidden="true">
+        <defs>
+          <linearGradient id="petal" x1="0" y1="0" x2="0.4" y2="1">
+            <stop offset="0%" stop-color="#ffe1e8"/>
+            <stop offset="40%" stop-color="#f4a8c0"/>
+            <stop offset="100%" stop-color="#a32f64"/>
+          </linearGradient>
+
+          <linearGradient id="inner-petal" x1="0" y1="0" x2="0.3" y2="1">
+            <stop offset="0%" stop-color="#ffe8eb"/>
+            <stop offset="48%" stop-color="#ffbfd3"/>
+            <stop offset="100%" stop-color="#c34c7c"/>
+          </linearGradient>
+
+          <linearGradient id="green" x1="0" y1="0" x2="1" y2="0.5">
+            <stop stop-color="#254b43"/>
+            <stop offset="55%" stop-color="#7da789"/>
+            <stop offset="100%" stop-color="#365f50"/>
+          </linearGradient>
+
+          <radialGradient id="gold">
+            <stop stop-color="#fff2c2"/>
+            <stop offset="55%" stop-color="#efc987"/>
+            <stop offset="100%" stop-color="#c58168"/>
+          </radialGradient>
+        </defs>
+
+        <ellipse
+          cx="300" cy="588" rx="105" ry="12"
+          fill="#090710" opacity=".3"/>
+
+        <g class="plant">
+          <!-- Stem -->
+          <path
+            d="M300 582 C280 493 327 369 300 250"
+            fill="none"
+            stroke="url(#green)"
+            stroke-width="11"
+            stroke-linecap="round"/>
+
+          <!-- Leaves -->
+          <path
+            d="M299 484 C220 482 164 442 152 389 C216 379 282 418 299 484Z"
+            fill="url(#green)"/>
+
+          <path
+            d="M304 435 C375 436 420 392 435 350 C370 345 318 379 304 435Z"
+            fill="url(#green)"/>
+
+          <path
+            d="M166 401 Q231 425 295 479 M425 361 Q365 388 308 430"
+            fill="none"
+            stroke="#b1caaa"
+            stroke-opacity=".28"
+            stroke-width="2"/>
+
+          <!-- Green base of the flower -->
+          <path
+            d="M300 289 Q260 282 252 248 Q279 246 300 268 Q321 245 349 247 Q337 282 300 289"
+            fill="url(#green)"/>
+
+          <g transform="translate(300 250)">
+            <g id="petals"></g>
+
+            <path
+              class="bud-seam"
+              d="M0 -125 Q-18 -55 0 3"
+              fill="none"
+              stroke="#fff0e5"
+              stroke-width="1.3"/>
+
+            <g class="center">
+              <circle r="34" fill="url(#gold)"/>
+              <g id="pollen" fill="#a65c5d"></g>
+              <circle r="11" fill="#fff1c3" opacity=".7"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </button>
+
+    <p class="hint" id="hint">
+      <span aria-hidden="true">♡</span>
+      Tap the flower. I left something inside.
+    </p>
+
+    <!-- Your message -->
+    <div class="note-slot" aria-live="polite" aria-atomic="true">
+      <section class="letter" id="love-note" hidden>
+        <h2>I love you from the bottom of my heart</h2>
+        <p>-From Jesse</p>
+      </section>
+
+      <button class="again" id="again" type="button" hidden>
+        Let it bloom again ↻
+      </button>
+    </div>
+
+    <footer>A flower that never fades.</footer>
+
+    <noscript>
+      <p>Enable JavaScript to open your flower. I love you. -From Jesse</p>
+    </noscript>
+  </main>
+
+  <script>
+    const flower = document.getElementById('flower');
+    const note = document.getElementById('love-note');
+    const hint = document.getElementById('hint');
+    const again = document.getElementById('again');
+    const petals = document.getElementById('petals');
+    const pollen = document.getElementById('pollen');
+
+    const ns = 'http://www.w3.org/2000/svg';
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    );
+
+    let opened = false;
+
+    // Create two rings of petals, initially folded into a bud.
+    const rings = [
+      { count: 10, size: 1.1, offset: 0, fill: 'petal' },
+      { count: 8, size: .76, offset: 22.5, fill: 'inner-petal' }
+    ];
+
+    rings.forEach((ring, layer) => {
+      for (let i = 0; i < ring.count; i++) {
+        const angle = i * 360 / ring.count + ring.offset;
+
+        const group = document.createElementNS(ns, 'g');
+        group.setAttribute('transform', `rotate(${angle})`);
+
+        const petal = document.createElementNS(ns, 'path');
+
+        petal.setAttribute(
+          'd',
+          'M0 16 C-57 -10 -97 -96 -69 -155 C-43 -209 38 -211 68 -157 C101 -98 58 -12 0 16Z'
+        );
+
+        petal.setAttribute('fill', `url(#${ring.fill})`);
+        petal.setAttribute('class', 'petal');
+
+        petal.style.setProperty(
+          '--fold',
+          `${-angle + (i - ring.count / 2) * 4}deg`
+        );
+
+        petal.style.setProperty('--size', ring.size);
+
+        petal.style.setProperty(
+          '--delay',
+          `${layer * 160 + i * 22}ms`
+        );
+
+        group.appendChild(petal);
+        petals.appendChild(group);
+      }
+    });
+
+    // Add little dots to the flower's center.
+    for (let i = 0; i < 22; i++) {
+      const dot = document.createElementNS(ns, 'circle');
+      const angle = i * 2.4;
+      const radius = 13 + (i % 3) * 7;
+
+      dot.setAttribute('cx', Math.cos(angle) * radius);
+      dot.setAttribute('cy', Math.sin(angle) * radius);
+      dot.setAttribute('r', 1.8);
+
+      pollen.appendChild(dot);
+    }
+
+    // Twinkling background.
+    const stars = document.querySelector('.stars');
+
+    for (let i = 0; i < 38; i++) {
+      const star = document.createElement('i');
+
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+
+      star.style.setProperty(
+        '--time',
+        `${3 + Math.random() * 4}s`
+      );
+
+      star.style.setProperty(
+        '--delay',
+        `${-Math.random() * 7}s`
+      );
+
+      stars.appendChild(star);
+    }
+
+    function bloom() {
+      if (opened) return;
+      opened = true;
+
+      document.body.classList.add('bloomed');
+
+      flower.setAttribute('aria-expanded', 'true');
+      flower.setAttribute('aria-label', 'Your flower is open');
+
+      note.hidden = false;
+      again.hidden = false;
+
+      hint.innerHTML =
+        '<span aria-hidden="true">♡</span>' +
+        'Every petal, a little more love.';
+
+      if (reducedMotion.matches) return;
+
+      // Send floating hearts up from the flower.
+      const rect = flower.getBoundingClientRect();
+
+      for (let i = 0; i < 16; i++) {
+        const heart = document.createElement('span');
+
+        heart.className = 'heart';
+        heart.textContent = '♡';
+
+        heart.style.left =
+          `${rect.left + rect.width / 2}px`;
+
+        heart.style.top =
+          `${rect.top + rect.height * .4}px`;
+
+        heart.style.setProperty(
+          '--dx',
+          `${(Math.random() - .5) * 420}px`
+        );
+
+        heart.style.setProperty(
+          '--dy',
+          `${-100 - Math.random() * 260}px`
+        );
+
+        heart.style.setProperty(
+          '--spin',
+          `${(Math.random() - .5) * 90}deg`
+        );
+
+        heart.style.animationDelay =
+          `${Math.random() * .8}s`;
+
+        heart.addEventListener(
+          'animationend',
+          () => heart.remove(),
+          { once: true }
+        );
+
+        document.querySelector('.hearts').appendChild(heart);
+      }
+    }
+
+    flower.addEventListener('click', bloom);
+
+    // Reset the flower so she can open it again.
+    again.addEventListener('click', () => {
+      opened = false;
+
+      document.body.classList.remove('bloomed');
+
+      flower.setAttribute('aria-expanded', 'false');
+      flower.setAttribute('aria-label', 'Open your flower');
+
+      note.hidden = true;
+      again.hidden = true;
+
+      hint.innerHTML =
+        '<span aria-hidden="true">♡</span>' +
+        'Tap the flower. I left something inside.';
+
+      flower.focus({ preventScroll: true });
+    });
+  </script>
+</body>
+</html>
